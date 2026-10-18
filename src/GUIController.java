@@ -12,6 +12,7 @@ public class GUIController {
     private JPanel controlPanel;
     private JLabel mistakesText;
     private JLabel selectedText;
+    private JLabel clueCountText;
     private JButton newPuzzleButton;
     private CandidateButton[] candidateButtons;
     private static final int CANDIDATE_BUTTONS_COUNT = 10;
@@ -55,13 +56,13 @@ public class GUIController {
     }
 
     public void newBoard() {
-        board.generateBoard();
-        board.setPuzzle();
+        board.generatePuzzle(SudokuCommons.clueCount);
         System.out.println(board);
         System.out.println("Board is valid: " + board.validBoard());
         System.out.println("Board has one solution: " + (board.hasOneSolution() ? "Y" : "N"));
         System.out.println("Board is empty: " + (board.isEmpty() ? "Y" : "N"));
         rebuildBoardPanel();
+        rebuildControlPanel();
     }
 
     public void createWindow(){
@@ -74,7 +75,7 @@ public class GUIController {
         mainFrame.add(masterPanel);
 
         mainFrame.pack();
-        mainFrame.setMinimumSize(mainFrame.getSize());
+        mainFrame.setMinimumSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight() + 225));
         mainFrame.setVisible(true);
     }
 
@@ -106,6 +107,7 @@ public class GUIController {
         controlPanel = new JPanel(new FlowLayout());
         controlPanel.setBackground(Color.LIGHT_GRAY);
         Font controlPanelFont = new Font("Arial", Font.PLAIN, 18);
+        Dimension textBoxSize = new Dimension(120, 35);
 
         newPuzzleButton = new JButton("New Puzzle");
         newPuzzleButton.setBackground(Color.BLACK);
@@ -118,17 +120,23 @@ public class GUIController {
 
         mistakesText = new JLabel("Mistakes: " + mistakes);
         mistakesText.setFont(controlPanelFont);
-        mistakesText.setPreferredSize(new Dimension(175,  35));
+        mistakesText.setPreferredSize(textBoxSize);
         mistakesText.setFocusable(false);
 
         selectedText = new JLabel("Selected: " + selected);
         selectedText.setFont(controlPanelFont);
-        selectedText.setPreferredSize(new Dimension(175,  35));
+        selectedText.setPreferredSize(textBoxSize);
         selectedText.setFocusable(false);
+
+        clueCountText = new JLabel("Clues: " + board.countClues());
+        clueCountText.setFont(controlPanelFont);
+        clueCountText.setPreferredSize(textBoxSize);
+        clueCountText.setFocusable(false);
 
         controlPanel.add(newPuzzleButton);
         controlPanel.add(mistakesText);
         controlPanel.add(selectedText);
+        controlPanel.add(clueCountText);
     }
 
     public void updateMistakesText(){

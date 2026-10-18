@@ -8,14 +8,19 @@ public class SudokuMain {
         gui.createWindow();
 
         System.out.println("Puzzle transformation:\n");
-        board.setPuzzle();
+        System.out.println(board);
 
         debugBoard(board);
+    }
 
-        while(board.hasOneSolution()){
-            gui.newBoard();
-            debugBoard(board);
-        }
+    private static void generateAndDebugInvalidBoard(){
+        System.out.println("=========================\nInvalid board test");
+        Board b = new Board();
+        b.generateBoard();
+        for (Cell[] row : b.getBoard())
+            for (Cell c : row) c.setVal(0);
+        System.out.println(b);
+        System.out.println("Board is valid: " + b.validBoard());
     }
 
     private static void debugBoard(Board board){

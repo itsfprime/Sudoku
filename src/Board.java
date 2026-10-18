@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Board {
@@ -22,32 +24,58 @@ public class Board {
         setSolver();
     }
 
+    public void generatePuzzle(int targetClues) {
+        do {
+            generateBoard();
+        } while (!setPuzzle(targetClues));
+    }
+
     public boolean validBoard(){
-        return solver.hasSolution(this);
+        int solutions = solver.getSolutions(this);
+        return solutions == 1;
     }
 
     public boolean hasOneSolution(){
+        validBoard();
         return solver.isValid();
     }
 
-    public void setPuzzle(){
-        while(!(getNonZeroElements() < 50)){
-            // Pick a random cell value, if that cell's value is 0 or is a clue cell pick a new one
-            Cell curr;
-            do{
-                curr = cells[RANDOM.nextInt(0, ROWS)][RANDOM.nextInt(0, COLS)];
-            } while (curr.getVal() == 0 || curr.isClue());
-
-            // Store the initial value of the cell
-            int initialValue = curr.getVal();
-            // Remove the value from this cell
-            curr.setVal(0);
-            // If this altered board can't be solved, restore original value and set this cell as a clue cell
-            if(!solver.hasSolution(this)){
-                curr.setVal(initialValue);
-                curr.toggleIsClue();
+    public int countClues(){
+        int c = 0;
+        for(int i = 0; i < ROWS; i++){
+            for(int k = 0; k < COLS; k++){
+                if(cells[i][k].isClue()) c++;
             }
         }
+        return c;
+    }
+
+    /**
+     * Attempt to remove values until values remaining reaches target clue value.
+     * @param targetClues The desired amount of remaining clue values on the board
+     * @return board's ability to be solved with given clue count
+     */
+    public boolean setPuzzle(int targetClues) {
+        List<Cell> untried = new ArrayList<>();
+        // All cells are untried
+        for (Cell[] row : cells) untried.addAll(Arrays.asList(row));
+
+        while (getNonZeroElements() > targetClues && !untried.isEmpty()) {
+            Cell curr = untried.remove(RANDOM.nextInt(untried.size()));
+
+            int initial = curr.getVal();
+            curr.setVal(0);
+            if (solver.getSolutions(this) != 1) {
+                curr.setVal(initial);   // removal broke uniqueness, keep it
+            }
+        }
+
+        if (getNonZeroElements() > targetClues) return false;  // couldn't reach target
+
+        for (Cell[] row : cells)
+            for (Cell c : row)
+                if (c.getVal() != 0 && !c.isClue()) c.toggleIsClue();
+        return true;
     }
 
     public int getNonZeroElements(){
@@ -171,7 +199,7 @@ public class Board {
     }
 
     public String toString(){
-        if(isEmpty()) return "Board is empty";
+        //if(isEmpty()) return "Board is empty";
         StringBuilder ret = new StringBuilder();
         for(int row = 0; row < ROWS; row++){
             for(int column = 0; column < COLS; column++){
