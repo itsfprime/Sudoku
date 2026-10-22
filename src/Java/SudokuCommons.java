@@ -1,3 +1,5 @@
+package Java;
+
 public interface SudokuCommons {
     /*
      Clue Count generation runtimes (n=350):
@@ -14,5 +16,5 @@ public interface SudokuCommons {
      50 : 1.38ms        [   1.28ms - 1.47ms        ]
      60 : 1.18ms        [   1.10ms - 1.27ms        ]
     */
-    int clueCount = 22;
+    int clueCount = 25;
 }

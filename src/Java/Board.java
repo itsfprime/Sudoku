@@ -1,3 +1,5 @@
+package Java;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -199,7 +201,7 @@ public class Board {
     }
 
     public String toString(){
-        //if(isEmpty()) return "Board is empty";
+        //if(isEmpty()) return "Java.Board is empty";
         StringBuilder ret = new StringBuilder();
         for(int row = 0; row < ROWS; row++){
             for(int column = 0; column < COLS; column++){
