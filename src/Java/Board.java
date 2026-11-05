@@ -24,6 +24,7 @@ public class Board {
         cells = new Cell[ROWS][COLS];
         recGen(1, 1);
         setSolver();
+        setPuzzle(SudokuCommons.clueCount);
     }
 
     public void generatePuzzle(int targetClues) {
@@ -120,20 +121,21 @@ public class Board {
             nextCol = 1;
         }
 
+        int initialValue = curr.getVal();
         while (!candidates.isEmpty()) {
             int randomIndex = RANDOM.nextInt(candidates.size());
             int candidate = candidates.remove(randomIndex);
             curr.setVal(candidate);
 
             if (recGen(nextRow, nextCol)) {
-                curr.setButton();
+                curr.setButton(candidate);
                 return true;
             }
         }
 
         // Every candidate led to a dead end; undo this choice.
         curr.setVal(0);
-        curr.setButton();
+        curr.setButton(initialValue);
         return false;
     }
 

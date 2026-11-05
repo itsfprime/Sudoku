@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class GUIController {
     private Board board;
@@ -33,6 +35,7 @@ public class GUIController {
             for (int col = 0; col < Board.COLS; col++) {
                 Cell cell = board.getBoard()[row][col];
                 cell.getButton().setText(cell.getVal() == 0 ? " " : Integer.toString(cell.getVal()));
+
             }
         }
 
@@ -203,7 +206,32 @@ public class GUIController {
         boardPanel.setPreferredSize(new Dimension(450, 500));
         for(int i = 0; i < Board.ROWS; i++){
             for(int k = 0; k < Board.COLS; k++){
-                boardPanel.add(board.getBoard()[i][k].getButton());
+                Cell curr = board.getBoard()[i][k];
+                boardPanel.add(curr.getButton());
+                if(!curr.isClue()){
+                    curr.getButton().addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            System.out.printf("(%d, %d): Clicked!\nSelected: %d\n", curr.getRow(), curr.getCol(), selected);
+                            curr.setVal(selected);
+                            if(selected != curr.getCorrectVal()){
+                                curr.getButton().setForeground(Color.RED);
+                            }
+                            else if(selected == curr.getCorrectVal()){
+                                curr.getButton().setForeground(Color.BLUE);
+                            }
+                            System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
+                        }
+                    });
+                }
+                else{
+                    curr.getButton().addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                    });
+                }
             }
         }
         mistakes = 0;

@@ -17,6 +17,7 @@ public class Solver {
     public int getSolutions(Board board) {
         currentBoard = board;
         currentSolution = new int[Board.ROWS][Board.COLS];
+        previousSolution = new int[Board.ROWS][Board.COLS];
 
         for (int r = 0; r < Board.ROWS; r++) {
             for (int c = 0; c < Board.COLS; c++) {
@@ -32,13 +33,11 @@ public class Solver {
             }
         }
 
-        previousSolution = new int[Board.ROWS][Board.COLS];
         for (int r = 0; r < Board.ROWS; r++) {
             previousSolution[r] = currentSolution[r].clone();
         }
 
         currentBoard = null;
-
         hasOneSolution = solutions == 1;
 
         return solutions;

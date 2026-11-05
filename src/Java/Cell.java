@@ -12,7 +12,6 @@ public class Cell {
         this.row = row;
         this.col = col;
         this.val = val;
-        correctVal = val;
         isClue = false;
     }
 
@@ -48,19 +47,27 @@ public class Cell {
         this.val = val;
 
         if (button != null) {
-            button.setText(val == 0 ? "" : Integer.toString(val));
+            button.setText(val == 0 || val == 10 ? "" : Integer.toString(val));
         }
     }
 
-    public void setButton(){
+    public void setButton(int val){
         button = new CellButton(row, col, val);
     }
 
     public void setButtonText(int value){
-        button.setText(value == 0 ? " " : value + "");
+        button.setText(value == 0 ? "" : value + "");
     }
 
     public CellButton getButton(){
         return button;
+    }
+
+    public int getCorrectVal() {
+        return correctVal;
+    }
+
+    public void setCorrectVal(int correctVal){
+        this.correctVal = correctVal;
     }
 }
