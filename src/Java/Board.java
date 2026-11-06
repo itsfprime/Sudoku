@@ -23,6 +23,9 @@ public class Board {
     public void generateBoard() {
         cells = new Cell[ROWS][COLS];
         recGen(1, 1);
+        for(Cell[] row : cells){
+            for(Cell c : row) c.setCorrectVal(c.getVal());
+        }
         setSolver();
         setPuzzle(SudokuCommons.clueCount);
     }

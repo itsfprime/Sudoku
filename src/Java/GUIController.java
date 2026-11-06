@@ -192,12 +192,23 @@ public class GUIController {
                 public void actionPerformed(ActionEvent e) {
                     selected = button.getValue();
                     updateSelectedText();
+                    highlightCells();
                 }
             });
         }
 
         // Last element is clear, essentially do nothing with only clue board state
         selected = CANDIDATE_BUTTONS_COUNT;
+    }
+
+    private void highlightCells(){
+        for(Cell[] row : board.getBoard()){
+            for(Cell c : row){
+                if(c.getVal() == selected) c.getButton().setBackground(Color.BLUE);
+                else c.getButton().setBackground(Color.BLACK);
+            }
+
+        }
     }
 
     private void createBoardPanel(){
@@ -218,7 +229,7 @@ public class GUIController {
                                 curr.getButton().setForeground(Color.RED);
                             }
                             else if(selected == curr.getCorrectVal()){
-                                curr.getButton().setForeground(Color.BLUE);
+                                curr.getButton().setForeground(Color.CYAN);
                             }
                             System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                         }
