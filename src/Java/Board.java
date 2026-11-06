@@ -156,6 +156,8 @@ public class Board {
             }
         }
 
+        curr.setCandidates(candidates);
+
         return candidates;
     }
 
