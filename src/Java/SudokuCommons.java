@@ -16,5 +16,5 @@ public interface SudokuCommons {
      50 : 1.38ms        [   1.28ms - 1.47ms        ]
      60 : 1.18ms        [   1.10ms - 1.27ms        ]
     */
-    int clueCount = 25;
+    int clueCount = 30;
 }

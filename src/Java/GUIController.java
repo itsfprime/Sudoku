@@ -18,6 +18,7 @@ public class GUIController {
     private JLabel selectedText;
     private JLabel clueCountText;
     private JButton newPuzzleButton;
+    private JCheckBox autoCandidatesToggle;
     private CandidateButton[] candidateButtons;
     private static final int CANDIDATE_BUTTONS_COUNT = 10;
     private static final Dimension FRAME_SIZE = new Dimension(800, 800);
@@ -133,6 +134,18 @@ public class GUIController {
         selectedText.setPreferredSize(textBoxSize);
         selectedText.setFocusable(false);
 
+        autoCandidatesToggle = new JCheckBox("Auto Candidates");
+        autoCandidatesToggle.setFont(controlPanelFont);
+        autoCandidatesToggle.setFocusable(false);
+        autoCandidatesToggle.setBackground(Color.LIGHT_GRAY);
+
+        autoCandidatesToggle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
         clueCountText = new JLabel("Clues: " + board.countClues());
         clueCountText.setFont(controlPanelFont);
         clueCountText.setPreferredSize(textBoxSize);
@@ -142,6 +155,7 @@ public class GUIController {
         controlPanel.add(mistakesText);
         controlPanel.add(selectedText);
         controlPanel.add(clueCountText);
+        controlPanel.add(autoCandidatesToggle);
     }
 
     public void updateMistakesText(){
@@ -204,7 +218,7 @@ public class GUIController {
     private void highlightCells(){
         for(Cell[] row : board.getBoard()){
             for(Cell c : row){
-                if(c.getVal() == selected) c.getButton().setBackground(Color.BLUE);
+                if(c.getVal() == selected && c.getVal() != 10) c.getButton().setBackground(Color.BLUE);
                 else c.getButton().setBackground(Color.BLACK);
             }
 
@@ -225,12 +239,15 @@ public class GUIController {
                         public void actionPerformed(ActionEvent e) {
                             System.out.printf("(%d, %d): Clicked!\nSelected: %d\n", curr.getRow(), curr.getCol(), selected);
                             curr.setVal(selected);
-                            if(selected != curr.getCorrectVal()){
+                            if(selected != curr.getCorrectVal() && selected != 10){
                                 curr.getButton().setForeground(Color.RED);
+                                mistakes++;
+                                updateMistakesText();
                             }
                             else if(selected == curr.getCorrectVal()){
                                 curr.getButton().setForeground(Color.CYAN);
                             }
+                            highlightCells();
                             System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                         }
                     });
