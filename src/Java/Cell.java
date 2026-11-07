@@ -1,8 +1,8 @@
 package Java;
 
 public class Cell {
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
     private int val;
     private int correctVal;
     private CellButton button;
@@ -31,14 +31,6 @@ public class Cell {
         return col;
     }
 
-    public void setRow(int row){
-        this.row = row;
-    }
-
-    public void setCol(int col){
-        this.col = col;
-    }
-
     public int getVal(){
         return val;
     }
@@ -47,7 +39,7 @@ public class Cell {
         this.val = val;
 
         if (button != null) {
-            button.setText(val == 0 || val == 10 ? "" : Integer.toString(val));
+            setButtonText(val);
         }
     }
 
@@ -56,7 +48,7 @@ public class Cell {
     }
 
     public void setButtonText(int value){
-        button.setText(value == 0 ? "" : value + "");
+        button.setText(value == 0 || value == 10 ? "" : value + "");
     }
 
     public CellButton getButton(){

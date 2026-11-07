@@ -2,13 +2,9 @@ package Java;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-public class CandidateButton extends JButton implements WindowListener, ActionListener{
-    private int value;
+public class CandidateButton extends JButton{
+    private final int value;
 
     public CandidateButton(int value){
         super();
@@ -29,50 +25,5 @@ public class CandidateButton extends JButton implements WindowListener, ActionLi
 
     public int getValue(){
         return value;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(value < 10){
-
-        }
-        else{
-
-        }
-    }
-
-    @Override
-    public void windowOpened(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-        // Do nothing
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
-        // Do nothing
     }
 }

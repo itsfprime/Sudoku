@@ -2,7 +2,7 @@ package Java;
 
 public interface SudokuCommons {
     /*
-     Clue Count generation runtimes (n=350):
+     Clue Count generation runtimes (n=350) Ryzen 7 7700x:
      23 : 1739.60ms     [   1476.11ms - 2003.09ms  ]
      24 : 377.63ms      [   318.33ms - 436.93ms    ]
      25 : 208.13ms      [   159.91ms - 256.35ms    ]
