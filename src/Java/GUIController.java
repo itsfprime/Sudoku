@@ -2,15 +2,22 @@ package Java;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GUIController {
-    private final Board board;
+    private Board board;
+    private JFrame mainFrame;
     private JPanel masterPanel;
     private JPanel boardPanel;
     private JPanel candidatesPanel;
     private JPanel controlPanel;
     private JLabel mistakesText;
     private JLabel selectedText;
+    private JLabel clueCountText;
+    private JButton newPuzzleButton;
+    private JCheckBox autoCandidatesToggle;
+    private CandidateButton[] candidateButtons;
     private static final int CANDIDATE_BUTTONS_COUNT = 10;
     private static final Dimension FRAME_SIZE = new Dimension(800, 800);
     private int mistakes;
@@ -18,6 +25,21 @@ public class GUIController {
 
     public GUIController(Board board){
         this.board = board;
+    }
+
+    public void refreshBoard() {
+        boardPanel.removeAll();
+
+        for (int row = 0; row < Board.ROWS; row++) {
+            for (int col = 0; col < Board.COLS; col++) {
+                Cell cell = board.getBoard()[row][col];
+                cell.getButton().setText(cell.getVal() == 0 ? " " : Integer.toString(cell.getVal()));
+
+            }
+        }
+
+        boardPanel.revalidate();
+        boardPanel.repaint();
     }
 
     private void rebuildBoardPanel() {
@@ -48,7 +70,7 @@ public class GUIController {
     }
 
     public void createWindow(){
-        JFrame mainFrame = new JFrame("Fprime's Sudoku");
+        mainFrame = new JFrame("Fprime's Sudoku");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(FRAME_SIZE);
         mainFrame.setLocation(575, 120);
@@ -91,14 +113,14 @@ public class GUIController {
         Font controlPanelFont = new Font("Arial", Font.PLAIN, 18);
         Dimension textBoxSize = new Dimension(120, 35);
 
-        JButton newPuzzleButton = new JButton("New Puzzle");
+        newPuzzleButton = new JButton("New Puzzle");
         newPuzzleButton.setBackground(Color.BLACK);
         newPuzzleButton.setForeground(Color.LIGHT_GRAY);
         newPuzzleButton.setFont(controlPanelFont);
         newPuzzleButton.setPreferredSize(new Dimension(150,  35));
         newPuzzleButton.setFocusable(false);
 
-        newPuzzleButton.addActionListener(_ -> newBoard());
+        newPuzzleButton.addActionListener(e -> newBoard());
 
         mistakesText = new JLabel("Mistakes: " + mistakes);
         mistakesText.setFont(controlPanelFont);
@@ -110,16 +132,23 @@ public class GUIController {
         selectedText.setPreferredSize(textBoxSize);
         selectedText.setFocusable(false);
 
-        JCheckBox autoCandidatesToggle = new JCheckBox("Auto Candidates");
+        autoCandidatesToggle = new JCheckBox("Auto Candidates");
         autoCandidatesToggle.setFont(controlPanelFont);
         autoCandidatesToggle.setFocusable(false);
         autoCandidatesToggle.setBackground(Color.LIGHT_GRAY);
 
-        autoCandidatesToggle.addActionListener(_ -> {
-            // TODO
+        autoCandidatesToggle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(Cell[] row : board.getBoard()){
+                    for(Cell cell : row) {
+                        cell.toggleCandidatesLabel();
+                    }
+                }
+            }
         });
 
-        JLabel clueCountText = new JLabel("Clues: " + board.countClues());
+        clueCountText = new JLabel("Clues: " + board.countClues());
         clueCountText.setFont(controlPanelFont);
         clueCountText.setPreferredSize(textBoxSize);
         clueCountText.setFocusable(false);
@@ -155,8 +184,7 @@ public class GUIController {
     }
 
     public void updateSelectedText(){
-        String s = selected == 10 ? "None" : selected + "";
-        selectedText = new JLabel("Selected: " + s);
+        selectedText = new JLabel("Selected: " + selected);
         rebuildControlPanel();
     }
 
@@ -168,15 +196,20 @@ public class GUIController {
     private void createCandidatesPanel(){
         candidatesPanel = new JPanel(new GridLayout(10, 1));
         candidatesPanel.setBackground(Color.BLACK);
+        candidateButtons = new CandidateButton[CANDIDATE_BUTTONS_COUNT];
 
-        for(int i = 0; i < CANDIDATE_BUTTONS_COUNT; i++){
+        for(int i = 0; i < candidateButtons.length; i++){
             CandidateButton button = new CandidateButton(i+1);
+            candidateButtons[i] = button;
             candidatesPanel.add(button);
 
-            button.addActionListener(_ -> {
-                selected = button.getValue();
-                updateSelectedText();
-                highlightCells();
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selected = button.getValue();
+                    updateSelectedText();
+                    highlightCells();
+                }
             });
         }
 
@@ -190,6 +223,7 @@ public class GUIController {
                 if(c.getVal() == selected && c.getVal() != 10) c.getButton().setBackground(Color.BLUE);
                 else c.getButton().setBackground(Color.BLACK);
             }
+
         }
     }
 
@@ -202,30 +236,39 @@ public class GUIController {
                 Cell curr = board.getBoard()[i][k];
                 boardPanel.add(curr.getButton());
                 if(!curr.isClue()){
-                    curr.getButton().addActionListener(_ -> {
-                        System.out.printf("(%d, %d): Clicked!\nSelected: %d\n", curr.getRow(), curr.getCol(), selected);
-                        curr.setVal(selected);
-                        if(selected != curr.getCorrectVal() && selected != 10){
-                            curr.getButton().setForeground(Color.RED);
-                            incrementMistakes();
+                    curr.getButton().addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            System.out.printf("(%d, %d): Clicked!\nSelected: %d\n", curr.getRow(), curr.getCol(), selected);
+                            curr.setVal(selected);
+                            if(selected != curr.getCorrectVal() && selected != 10){
+                                curr.getButton().setForeground(Color.RED);
+                                mistakes++;
+                                updateMistakesText();
+                            }
+                            else if(selected == curr.getCorrectVal()){
+                                curr.getButton().setForeground(Color.CYAN);
+                            }
+                            highlightCells();
+                            System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                         }
-                        else if(selected == curr.getCorrectVal()){
-                            curr.getButton().setForeground(Color.CYAN);
-                        }
-                        highlightCells();
-                        System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                     });
                 }
                 else{
-                    curr.getButton().addActionListener(_ -> {
-                        selected = curr.getVal();
-                        updateSelectedText();
-                        highlightCells();
+                    curr.getButton().addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
                     });
                 }
             }
         }
         mistakes = 0;
 
+    }
+
+    public void setBoard(Board board){
+        this.board = board;
     }
 }
