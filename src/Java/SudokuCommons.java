@@ -1,6 +1,8 @@
 package Java;
 
-public interface SudokuCommons {
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public abstract class SudokuCommons {
     /*
      Clue Count generation runtimes (n=350) Ryzen 7 7700x:
      23 : 1739.60ms     [   1476.11ms - 2003.09ms  ]
@@ -16,5 +18,6 @@ public interface SudokuCommons {
      50 : 1.38ms        [   1.28ms - 1.47ms        ]
      60 : 1.18ms        [   1.10ms - 1.27ms        ]
     */
-    int clueCount = 30;
+    static int clueCount = 30;
+    static AtomicBoolean autoCandidates = new AtomicBoolean(false);
 }
