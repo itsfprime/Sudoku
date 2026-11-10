@@ -25,3 +25,11 @@ Checking the auto-candidates box will visualize all the possible candidate value
 <img width="773" height="770" alt="image" src="https://github.com/user-attachments/assets/5253e35a-b070-46f5-b228-0b82d7280e4f" />
 <img width="770" height="771" alt="image" src="https://github.com/user-attachments/assets/6807d393-8f65-4b0b-9c73-56c7de65c947" />
 <img width="770" height="774" alt="image" src="https://github.com/user-attachments/assets/6de6ed5f-ca2b-4fc6-8b6d-6925595ff176" />
+
+## Before Playing:
+Ensure your computer has the Java Runtime Environment version 22 or newer as this is the chosen build for the project. Earlier versions are not supported, as such they may not run or run incorrectly. <br>
+Install JRE22: <br>
+Oracle: https://www.oracle.com/java/technologies/javase/jdk22-archive-downloads.html <br>
+OpenJDK: https://openjdk.org/projects/jdk/22/ <br>
+Adoptium: https://adoptium.net/temurin/releases/?version=22 <br>
+Debian: https://packages.debian.org/sid/openjdk-22-jre?pow_referer=https%3A%2F%2Fduckduckgo.com%2F <br>
