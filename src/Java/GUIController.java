@@ -3,6 +3,8 @@ package Java;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class GUIController {
     private final Board board;
@@ -38,15 +40,17 @@ public class GUIController {
         masterPanel.repaint();
     }
 
-    public void newBoard() {
-        board.generatePuzzle(SudokuCommons.clueCount);
-        System.out.println(board);
-        System.out.println("Board is valid: " + board.validBoard());
-        System.out.println("Board has one solution: " + (board.hasOneSolution() ? "Y" : "N"));
-        System.out.println("Board is empty: " + (board.isEmpty() ? "Y" : "N"));
-        rebuildBoardPanel();
-        rebuildControlPanel();
-        mistakes = 0;
+    public void newBoardAsync(){
+        SwingWorker<Board, Void> sw = new SwingWorker<>() {
+            @Override
+            protected Board doInBackground() {
+                board.generateBoard();
+                rebuildBoardPanel();
+                rebuildControlPanel();
+                return board;
+            }
+        };
+        sw.execute();
     }
 
     public void createWindow(){
@@ -57,6 +61,68 @@ public class GUIController {
 
         createMasterPanel();
         mainFrame.add(masterPanel);
+
+        mainFrame.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()){
+                    case KeyEvent.VK_NUMPAD0:
+                    case KeyEvent.VK_0:
+                        selected = 10;
+                        break;
+                    case KeyEvent.VK_NUMPAD1:
+                    case KeyEvent.VK_1:
+                        selected = 1;
+                        break;
+                    case KeyEvent.VK_NUMPAD2:
+                    case KeyEvent.VK_2:
+                        selected = 2;
+                        break;
+                    case KeyEvent.VK_NUMPAD3:
+                    case KeyEvent.VK_3:
+                        selected = 3;
+                        break;
+                    case KeyEvent.VK_NUMPAD4:
+                    case KeyEvent.VK_4:
+                        selected = 4;
+                        break;
+                    case KeyEvent.VK_NUMPAD5:
+                    case KeyEvent.VK_5:
+                        selected = 5;
+                        break;
+                    case KeyEvent.VK_NUMPAD6:
+                    case KeyEvent.VK_6:
+                        selected = 6;
+                        break;
+                    case KeyEvent.VK_NUMPAD7:
+                    case KeyEvent.VK_7:
+                        selected = 7;
+                        break;
+                    case KeyEvent.VK_NUMPAD8:
+                    case KeyEvent.VK_8:
+                        selected = 8;
+                        break;
+                    case KeyEvent.VK_NUMPAD9:
+                    case KeyEvent.VK_9:
+                        selected = 9;
+                        break;
+                    default:
+                        break;
+                }
+                updateSelectedText();
+                highlightCells();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 
         mainFrame.pack();
         mainFrame.setMinimumSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight() + 225));
@@ -110,7 +176,17 @@ public class GUIController {
         newPuzzleButton.setPreferredSize(new Dimension(150,  35));
         newPuzzleButton.setFocusable(false);
 
-        newPuzzleButton.addActionListener(_ -> newBoard());
+        newPuzzleButton.addActionListener(_ -> new SwingWorker<>() {
+            @Override
+            protected Object doInBackground() {
+                newPuzzleButton.setText("Loading...");
+                newPuzzleButton.setEnabled(false);
+                newBoardAsync();
+                newPuzzleButton.setText("New Puzzle");
+                newPuzzleButton.setEnabled(true);
+                return newPuzzleButton;
+            }
+        }.execute());
 
         mistakesText = new JLabel("Mistakes: " + mistakes);
         mistakesText.setFont(controlPanelFont);
@@ -126,7 +202,6 @@ public class GUIController {
         autoCandidatesToggle.setFont(controlPanelFont);
         autoCandidatesToggle.setFocusable(false);
         autoCandidatesToggle.setBackground(Color.LIGHT_GRAY);
-
         autoCandidatesToggle.setSelected(SudokuCommons.autoCandidates.get());
         if(autoCandidatesToggle.isSelected()) refreshCandidates();
 
@@ -153,7 +228,6 @@ public class GUIController {
 
     private void rebuildControlPanel(){
         masterPanel.remove(controlPanel);
-
         createControlPanel();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -203,7 +277,6 @@ public class GUIController {
                 if(c.getVal() == selected && c.getVal() != 10) c.getButton().setBackground(Color.BLUE);
                 else c.getButton().setBackground(Color.BLACK);
             }
-
         }
     }
 
@@ -226,7 +299,7 @@ public class GUIController {
                             curr.getButton().setForeground(Color.RED);
                             incrementMistakes();
                         }
-                        else if(selected == curr.getCorrectVal()){
+                        else{
                             curr.getButton().setForeground(Color.CYAN);
                         }
                         highlightCells();
