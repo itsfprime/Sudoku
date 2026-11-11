@@ -15,7 +15,6 @@ Checking the auto-candidates box will visualize all the possible candidate value
 ### Plan to fix:
 * Slow load times on launch
 * Slow load times on board generation
-* Bugs in auto-candidatess
 
 ### Not yet planned:
 * Dancing Links approach
