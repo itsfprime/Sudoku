@@ -179,10 +179,8 @@ public class GUIController {
         newPuzzleButton.addActionListener(_ -> new SwingWorker<>() {
             @Override
             protected Object doInBackground() {
-                newPuzzleButton.setText("Loading...");
                 newPuzzleButton.setEnabled(false);
                 newBoardAsync();
-                newPuzzleButton.setText("New Puzzle");
                 newPuzzleButton.setEnabled(true);
                 return newPuzzleButton;
             }
