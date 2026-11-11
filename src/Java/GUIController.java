@@ -128,6 +128,7 @@ public class GUIController {
         autoCandidatesToggle.setBackground(Color.LIGHT_GRAY);
 
         autoCandidatesToggle.setSelected(SudokuCommons.autoCandidates.get());
+        if(autoCandidatesToggle.isSelected()) refreshCandidates();
 
         autoCandidatesToggle.addActionListener(_ -> {
             SudokuCommons.autoCandidates.set(autoCandidatesToggle.isSelected());
@@ -229,6 +230,7 @@ public class GUIController {
                             curr.getButton().setForeground(Color.CYAN);
                         }
                         highlightCells();
+                        refreshCandidates();
                         System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                     });
                 }
