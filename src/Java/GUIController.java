@@ -291,7 +291,6 @@ public class GUIController {
                 }
                 if(!curr.isClue()){
                     curr.getButton().addActionListener(_ -> {
-                        System.out.printf("(%d, %d): Clicked!\nSelected: %d\n", curr.getRow(), curr.getCol(), selected);
                         curr.setVal(selected);
                         if(selected != curr.getCorrectVal() && selected != 10){
                             curr.getButton().setForeground(Color.RED);
@@ -302,7 +301,6 @@ public class GUIController {
                         }
                         highlightCells();
                         refreshCandidates();
-                        System.out.printf("Selected: %d\nCorrect: %d\n", selected, curr.getCorrectVal());
                     });
                 }
                 else{
